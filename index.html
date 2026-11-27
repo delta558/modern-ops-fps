@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>MODERN OPS // FPS</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090d10;color:#e8ecec;font-family:Arial,'Noto Sans JP',sans-serif}canvas{display:block}#menu{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:linear-gradient(110deg,rgba(5,10,13,.96),rgba(10,18,21,.72)),repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.018) 4px 5px)}.panel{width:min(560px,92vw);padding:34px;border:1px solid #65716e;background:rgba(9,15,17,.92);box-shadow:0 20px 80px #000}.eyebrow{letter-spacing:.28em;color:#a6b69d;font-size:11px}.panel h1{font-size:clamp(34px,7vw,58px);line-height:.95;margin:14px 0 8px;letter-spacing:.04em}.panel h1 span{color:#b2c18e}.sub{color:#aeb9b5;font-size:13px;line-height:1.7}.btn{margin-top:22px;background:#a8b98b;color:#101612;border:0;padding:14px 22px;font-weight:900;letter-spacing:.12em;cursor:pointer;width:100%;font-size:14px}.btn:hover{background:#d0dfae}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;font-size:12px;color:#c0c9c5}.controls div{border-top:1px solid #394541;padding-top:8px}.controls b{color:#e5e9e4}#hud{position:fixed;inset:0;pointer-events:none;display:none;text-shadow:0 2px 4px #000}.topline{position:absolute;top:20px;left:24px;right:24px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.18em;color:#d5ddd5}.tag{border-left:3px solid #a9bd8c;padding-left:9px}.bottomleft{position:absolute;left:26px;bottom:24px}.hp{font-size:12px;letter-spacing:.15em;color:#cbd4c8}.hpbar{width:180px;height:5px;background:#39413e;margin-top:7px}.hpfill{height:100%;width:100%;background:#b5c68d}.ammo{position:absolute;right:28px;bottom:22px;text-align:right}.ammo strong{font-size:42px;letter-spacing:.04em}.ammo small{font-size:13px;color:#aab5ad}.weapon{font-size:10px;letter-spacing:.2em;color:#b7c5ae}.crosshair{position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%)}.crosshair:before,.crosshair:after{content:'';position:absolute;background:rgba(235,242,229,.9)}.crosshair:before{width:2px;height:18px;left:8px}.crosshair:after{height:2px;width:18px;top:8px}.hitmarker{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:28px;opacity:0;color:#fff}.hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-size:10px;color:#b8c1b9;letter-spacing:.12em;white-space:nowrap}#toast{position:absolute;top:22%;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.2em;color:#d7e4bd;opacity:0}#damage{position:fixed;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse,transparent 40%,rgba(150,20,12,.65) 100%)}#streakui{position:absolute;right:24px;top:64px;width:260px;padding:12px 14px;background:rgba(7,12,13,.78);border:1px solid #68756b;color:#e5ebdf;font-size:11px;letter-spacing:.08em}#streakui strong{font-size:17px;color:#d7e6b8}#streakui .muted{color:#aab5a9;margin-top:5px;line-height:1.5}#streakbar{height:4px;background:#38433a;margin-top:8px}#streakfill{height:100%;width:0;background:#b7ca91}#streaktoast{position:absolute;left:50%;top:32%;transform:translate(-50%,-50%);padding:15px 22px;border:1px solid #c6d4a4;background:rgba(8,14,12,.9);text-align:center;opacity:0;transition:opacity .15s;min-width:260px}#streaktoast strong{display:block;font-size:18px;letter-spacing:.12em;color:#d9e9b7}#streaktoast small{display:block;margin-top:5px;color:#c1cbbd}#mobile{display:none;position:fixed;inset:0;pointer-events:none;z-index:3} @media (pointer:coarse),(max-width:800px){#mobile{display:block}#streakui{right:10px;top:54px;width:min(210px,48vw);font-size:9px;padding:8px}#streakui strong{font-size:13px}.topline{top:10px;left:10px;right:10px;font-size:9px}.bottomleft{left:12px;bottom:12px}.hpbar{width:110px}.ammo{right:12px;bottom:12px}.ammo strong{font-size:30px}.hint{display:none}#streaktoast{top:25%;min-width:200px;padding:10px}#menu .panel{padding:20px;max-height:92vh;overflow:auto}}#stick{position:absolute;bottom:40px;left:28px;width:116px;height:116px;border:1px solid #ffffff55;border-radius:50%;pointer-events:auto;background:#ffffff0c}#nub{position:absolute;width:46px;height:46px;left:34px;top:34px;border-radius:50%;background:#dce6d477}#fire,#reload,#armorPlate{position:absolute;right:28px;border:1px solid #ffffff88;border-radius:50%;background:#17211dcc;color:white;pointer-events:auto}#fire{bottom:54px;width:76px;height:76px}#streaknext,#streakcall{position:absolute;right:112px;bottom:60px;width:56px;height:56px;border-radius:50%;border:1px solid #ffffff88;background:#17211dcc;color:white;pointer-events:auto;font-size:10px}#reload{bottom:145px;width:48px;height:48px;font-size:10px}#armorPlate{bottom:205px;right:28px;width:48px;height:48px;border-radius:50%;border:1px solid #8eb8d4;background:#17211dcc;color:#d9edfa;pointer-events:auto;font-size:9px}
+#arsenal{z-index:4;position:fixed;left:50%;bottom:22px;transform:translateX(-50%);pointer-events:auto;background:#101816e8;color:#e8eee8;border:1px solid #9aaa83;padding:9px 12px;font-size:12px;letter-spacing:.08em;max-width:48vw}#weaponSelect{background:#202a25;color:#edf2e8;border:1px solid #87977a;padding:7px;max-width:42vw}#armorbox{margin-top:7px;font-size:11px;letter-spacing:.13em;color:#b9cce0}#armorbar{width:180px;height:5px;background:#39434b;margin-top:5px}#armorfill{height:100%;width:100%;background:#80b8d6}
+@media(max-width:700px){#arsenal{bottom:145px;left:50%;font-size:10px;padding:5px 7px;max-width:48vw}#weaponSelect{max-width:42vw;padding:5px}#armorbar{width:110px}}
+
+#cinematic{display:none;position:fixed;inset:0;z-index:8;background:#050809;color:#e8eee8;pointer-events:none;overflow:hidden;font-family:monospace;text-align:center}
+#cinematic.show{display:block}.cine-title{position:absolute;top:8%;width:100%;font-size:clamp(20px,5vw,46px);letter-spacing:.22em;text-shadow:0 0 18px #9ebd90}.cine-sub{position:absolute;top:17%;width:100%;font-size:clamp(11px,2vw,17px);letter-spacing:.16em;color:#c4d0c2}.cine-screen{position:absolute;inset:25% 8% 12%;border:1px solid #72816d;background:linear-gradient(180deg,#15201e,#090c0d);overflow:hidden}.scan{position:absolute;left:0;right:0;height:2px;background:#9dbb8c;box-shadow:0 0 15px #9dbb8c;animation:scan 2s linear infinite}.plane{position:absolute;top:40%;left:-30%;font-size:64px;filter:drop-shadow(0 0 12px #fff);animation:fly 3.2s linear forwards}.missile{position:absolute;top:45%;left:20%;font-size:45px;transform:rotate(-20deg);animation:missile 2.6s ease-in forwards}.boom{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,230,160,.95),rgba(255,80,20,.65) 20%,transparent 60%);opacity:0;animation:blast .9s ease-out 1.8s forwards}.cine-caption{position:absolute;bottom:5%;width:100%;font-size:13px;letter-spacing:.18em}.cine-close{position:absolute;inset:0;background:rgba(10,10,10,.1)}@keyframes scan{from{top:0}to{top:100%}}@keyframes fly{to{left:120%}}@keyframes missile{to{left:80%;top:75%}}@keyframes blast{0%{opacity:0;transform:scale(.4)}30%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(2)}}
+@media(max-width:700px){.panel{padding:18px;width:94vw;max-height:94dvh;overflow:auto}.controls{font-size:11px;gap:7px}.topline{top:10px;left:10px;right:10px;font-size:9px}.bottomleft{left:12px;bottom:12px}.hpbar{width:120px}.ammo{right:12px;bottom:12px}.ammo strong{font-size:30px}.hint{display:none}#streakui{top:45px;right:8px;width:min(220px,55vw);padding:8px;font-size:9px}#streakui strong{font-size:13px}#mobile{display:block}#stick{bottom:20px;left:18px;width:110px;height:110px}#fire{bottom:24px;right:18px;width:72px;height:72px}#reload{bottom:110px;right:32px}#armorPlate{bottom:165px;right:32px}#support,#cycle{position:absolute;pointer-events:auto;border:1px solid #ffffff88;border-radius:50%;background:#17211dcc;color:white;width:54px;height:54px;font-size:11px}#support{bottom:195px;right:25px}#cycle{bottom:185px;left:24px}#streaktoast{min-width:0;width:90vw;top:28%}canvas{touch-action:none}}
+</style>
+</head>
+<body>
+<div id="menu"><div class="panel"><div class="eyebrow">FIELD SYSTEMS // TRAINING BUILD 01</div><h1>MODERN <span>OPS</span></h1><div class="sub">TACTICAL FIRST-PERSON COMBAT SIMULATION<br>訓練区域に展開します。遮蔽物を利用し、敵部隊を排除してください。</div><button class="btn" id="start">DEPLOY / ゲーム開始</button><div class="controls"><div><b>WASD</b> 移動　<b>Shift</b> ダッシュ</div><div><b>Mouse</b> 視点　<b>左クリック</b> 射撃</div><div><b>右クリック</b> 照準　<b>R</b> リロード</div><div><b>Space</b> ジャンプ　<b>Esc</b> 一時停止</div><div><b>DualShock</b> 左スティック移動</div><div><b>右スティック</b> 視点 / R2射撃</div></div><div class="sub" style="margin-top:14px;font-size:11px">ゲームパッドは接続後、ボタンを一度押してください。ブラウザによっては localhost または HTTPS が必要です。</div></div></div>
+<div id="hud"><div class="topline"><div class="tag">OPERATION // DUST YARD</div><div id="status">HOSTILE CONTACTS: 05</div></div><div class="crosshair"></div><div class="hitmarker" id="hit">×</div><div id="toast">TARGET DOWN</div><div id="streakui"><div>KILLSTREAK // COMBAT RECORD</div><strong id="streakname">NO SUPPORT SELECTED</strong><div class="muted" id="streakdesc">連続キルで支援を使用可能にする</div><div class="muted"><span id="streakprogress">0 / 3 KILLS</span>　|　選択 <span id="streakindex">01</span>/30</div><div id="streakbar"><div id="streakfill"></div></div><div class="muted">Q / D-PAD ←→ : SELECT　E / △ : DEPLOY</div></div><div id="streaktoast"><strong id="streaktitle">SUPPORT INBOUND</strong><small id="streakmessage"></small></div><div class="bottomleft"><div class="hp">VITALS <span id="hpnum">100</span></div><div class="hpbar"><div class="hpfill" id="hpfill"></div></div><div id="armorbox">ARMOR <span id="armornum">100</span><div id="armorbar"><div id="armorfill"></div></div></div></div><div id="arsenal">ARSENAL <select id="weaponSelect" aria-label="武器選択"></select></div><div class="ammo"><div class="weapon">M4 PLATFORM / 5.56×45</div><strong id="mag">30</strong> <small>/ <span id="reserve">120</span></small></div><div class="hint" id="hint">WASD MOVE　/　MOUSE LOOK　/　LMB FIRE　/　R RELOAD　V ARMOR PLATE</div></div><div id="damage"></div><div id="cinematic"><div class="cine-title" id="cTitle">AIR SUPPORT</div><div class="cine-sub" id="cSub">SUPPORT REQUEST CONFIRMED</div><div class="cine-screen"><div class="scan"></div><div id="cVisual"></div><div class="boom"></div></div><div class="cine-caption" id="cCaption">INCOMING</div></div>
+<div id="mobile"><div id="stick"><div id="nub"></div></div><button id="reload">R</button><button id="armorPlate">PLATE</button><button id="fire">FIRE</button><button id="streaknext">NEXT</button><button id="streakcall">CALL</button></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x89918c);scene.fog=new THREE.Fog(0x89918c,28,105);
+const camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.08,180);camera.position.set(0,1.7,8);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;document.body.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xc8d2d0,0x3a3930,2.0));const sun=new THREE.DirectionalLight(0xffe5c1,2.8);sun.position.set(-18,28,12);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-45;sun.shadow.camera.right=45;sun.shadow.camera.top=45;sun.shadow.camera.bottom=-45;scene.add(sun);
+const mat=(c,r=.9,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});// Lightweight synthesized sound effects (no external copyrighted audio files).
+let audioCtx=null;function ensureAudio(){if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(AC)audioCtx=new AC()}if(audioCtx?.state==='suspended')audioCtx.resume()}
+function playSound(kind){if(!audioCtx)return;const t=audioCtx.currentTime;const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();const filter=audioCtx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=kind==='shot'?1500:kind==='explosion'?500:2200;osc.connect(filter);filter.connect(gain);gain.connect(audioCtx.destination);if(kind==='shot'){osc.type='square';osc.frequency.setValueAtTime(105,t);osc.frequency.exponentialRampToValueAtTime(42,t+.09);gain.gain.setValueAtTime(.10,t);gain.gain.exponentialRampToValueAtTime(.001,t+.12);osc.start(t);osc.stop(t+.13)}else if(kind==='hit'){osc.type='triangle';osc.frequency.setValueAtTime(880,t);osc.frequency.exponentialRampToValueAtTime(320,t+.08);gain.gain.setValueAtTime(.045,t);gain.gain.exponentialRampToValueAtTime(.001,t+.09);osc.start(t);osc.stop(t+.1)}else if(kind==='explosion'){osc.type='sawtooth';osc.frequency.setValueAtTime(95,t);osc.frequency.exponentialRampToValueAtTime(24,t+.48);gain.gain.setValueAtTime(.2,t);gain.gain.exponentialRampToValueAtTime(.001,t+.5);osc.start(t);osc.stop(t+.51)}else{osc.type='sine';osc.frequency.setValueAtTime(560,t);osc.frequency.exponentialRampToValueAtTime(900,t+.06);gain.gain.setValueAtTime(.035,t);gain.gain.exponentialRampToValueAtTime(.001,t+.08);osc.start(t);osc.stop(t+.09)}}
+const groundMat=mat(0x62645a);const concrete=mat(0x777a72);const dark=mat(0x343a38);const sand=mat(0x93866c);const metal=mat(0x333a3b,.45,.65);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(180,180),groundMat);floor.rotation.x=-Math.PI/2;floor.position.y=0;floor.receiveShadow=true;scene.add(floor);
+// dusty ground markings and scattered debris
+for(let i=0;i<180;i++){const s=.08+Math.random()*.35;const o=new THREE.Mesh(new THREE.BoxGeometry(s,.025,s*1.5),mat(i%2?0x777568:0x4e5149));o.position.set((Math.random()-.5)*100,.018,(Math.random()-.5)*100);o.rotation.y=Math.random()*3;o.receiveShadow=true;scene.add(o)}
+const colliders=[];function box(x,y,z,w,h,d,material=concrete,collision=true){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);o.position.set(x,y+h/2,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);if(collision)colliders.push({x,z,w,d,h});return o}
+// industrial yard perimeter
+box(0,2,-38,80,4,1,dark);box(-40,2,0,1,4,76,dark);box(40,2,0,1,4,76,dark);box(0,2,38,80,4,1,dark);
+// containers, concrete barriers, crates
+box(-12,1.5,-13,13,3,5,mat(0x59645e));box(14,1.5,-19,14,3,5,mat(0x6b5140));box(23,1.5,8,10,3,5,mat(0x59645e));box(-25,1.5,15,12,3,5,mat(0x665647));
+box(-4,.7,-2,5,1.4,1.3,sand);box(7,.65,-9,4,1.3,1.2,concrete);box(17,.6,-1,4,1.2,1.1,concrete);box(-18,.7,2,5,1.4,1.2,sand);box(3,.55,17,5,1.1,1.2,sand);box(-9,.6,24,4,1.2,1.2,concrete);box(28,.8,23,5,1.6,1.2,concrete);
+// warehouse shells
+box(-30,3,-25,12,6,1,concrete);box(-35,3,-19,1,6,12,concrete);box(-25,3,-19,1,6,12,concrete);box(-30,6,-19,12,1,12,dark,false);
+// Expanded urban-industrial combat zone: warehouses, checkpoint, road lanes, light poles and cover.
+const rust=mat(0x76563d),roof=mat(0x4b514d),yellow=mat(0xb29a58),glass= new THREE.MeshStandardMaterial({color:0x8a9b98,metalness:.35,roughness:.25});
+function warehouse(x,z,w,d,h){box(x,h/2,z,w,h,d,concrete);box(x,h+.18,z,w+.35,.36,d+.35,roof,false);for(let i=-1;i<=1;i++){const win=new THREE.Mesh(new THREE.BoxGeometry(.08,1.1,2.1),glass);win.position.set(x-w/2-.05, h*.58,z+i*d*.25);scene.add(win)}}
+warehouse(29,-23,10,9,5);warehouse(-29,8,9,10,4.5);warehouse(5,31,12,7,4);
+// road strips and broken lane markings
+const road=new THREE.Mesh(new THREE.PlaneGeometry(13,78),mat(0x343936));road.rotation.x=-Math.PI/2;road.position.set(0,.025,0);scene.add(road);
+for(let z=-34;z<36;z+=7){const line=new THREE.Mesh(new THREE.BoxGeometry(.18,.025,3.2),yellow);line.position.set(0,.045,z);scene.add(line)}
+// sandbag nests and checkpoint gates
+for(const [x,z] of [[-8,-8],[16,12],[-24,-15],[27,3]]){for(let j=0;j<5;j++){const b=new THREE.Mesh(new THREE.BoxGeometry(1.05,.42,.58),mat(0x8a8068));b.position.set(x+(j-2)*.86,.22,z+Math.abs(j-2)*.18);b.rotation.y=(j-2)*.035;b.castShadow=true;scene.add(b)}}
+box(-5,1.4,35,14,2.8,.5,rust);box(5,2.8,35,.35,5.6,.35,yellow,false);box(-15,2.8,35,.35,5.6,.35,yellow,false);
+for(const [x,z] of [[-37,-30],[37,-30],[-37,30],[37,30],[-4,-34],[4,34]]){const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.18,7,8),metal);pole.position.set(x,3.5,z);scene.add(pole);const lamp=new THREE.PointLight(0xffd99a,1.1,13);lamp.position.set(x,6.7,z);scene.add(lamp)}
+// barrels, cable drums and rubble clusters for readable cover silhouettes
+for(let i=0;i<22;i++){const x=(Math.random()-.5)*68,z=(Math.random()-.5)*62;if(Math.abs(x)<5&&Math.abs(z)<9)continue;const barrel=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.9,12),i%2?rust:metal);barrel.position.set(x,.45,z);barrel.castShadow=true;scene.add(barrel)}
+// pipes / posts
+for(let i=0;i<12;i++){const p=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,3,8),metal);p.position.set(-36+i*6,1.5,31);p.castShadow=true;scene.add(p)}
+// Weapon armory: procedural low-poly models, unlimited ammunition.
+const weaponDefs=[
+ {name:'M4A1 CARBINE',cal:'5.56×45',damage:34,rate:.105,color:0x26302b,barrel:.62},
+ {name:'AK-12',cal:'5.45×39',damage:39,rate:.13,color:0x493b2b,barrel:.58},
+ {name:'SCAR-H',cal:'7.62×51',damage:52,rate:.19,color:0x343b37,barrel:.68},
+ {name:'HK MP5',cal:'9×19',damage:27,rate:.075,color:0x202725,barrel:.38},
+ {name:'FN P90',cal:'5.7×28',damage:25,rate:.065,color:0x424b45,barrel:.34},
+ {name:'M249 SAW',cal:'5.56×45',damage:31,rate:.085,color:0x333a35,barrel:.82},
+ {name:'M110 SASS',cal:'7.62×51',damage:78,rate:.34,color:0x343a35,barrel:.9},
+ {name:'M82A1',cal:'.50 BMG',damage:100,rate:.65,color:0x282e2d,barrel:1.05},
+ {name:'M870 BREACHER',cal:'12 GA',damage:85,rate:.48,color:0x4a4032,barrel:.48},
+ {name:'GLOCK 17',cal:'9×19',damage:30,rate:.16,color:0x202522,barrel:.25}
+];let weaponIndex=0;let gun=new THREE.Group();camera.add(gun);scene.add(camera);
+function buildGun(){while(gun.children.length)gun.remove(gun.children[0]);const w=weaponDefs[weaponIndex];const body=new THREE.Mesh(new THREE.BoxGeometry(.18,.19,.72),mat(w.color,.38,.55));body.position.set(.32,-.28,-.72);gun.add(body);const barrel=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,w.barrel,12),metal);barrel.rotation.x=Math.PI/2;barrel.position.set(.32,-.24,-1.05-w.barrel*.38);gun.add(barrel);const hand=new THREE.Mesh(new THREE.BoxGeometry(.14,.14,.42),mat(0x343d39));hand.position.set(.32,-.25,-.98);gun.add(hand);const stock=new THREE.Mesh(new THREE.BoxGeometry(.15,.17,.32),dark);stock.position.set(.32,-.29,-.36);gun.add(stock);const sight=new THREE.Mesh(new THREE.BoxGeometry(.055,.09,.12),metal);sight.position.set(.32,-.14,-.78);gun.add(sight);const magazine=new THREE.Mesh(new THREE.BoxGeometry(.11,.28,.16),mat(0x202523));magazine.position.set(.32,-.49,-.77);gun.add(magazine);gun.traverse(o=>{if(o.isMesh){o.castShadow=true;o.material.side=THREE.DoubleSide}});document.querySelector('.weapon').textContent=w.name+' / '+w.cal;document.querySelector('#mag').textContent='∞';document.querySelector('#reserve').textContent='∞';}
+const weaponSelect=document.querySelector('#weaponSelect');weaponDefs.forEach((w,i)=>{const op=document.createElement('option');op.value=i;op.textContent=w.name;weaponSelect.appendChild(op)});function selectWeapon(i){weaponIndex=(i+weaponDefs.length)%weaponDefs.length;weaponSelect.value=String(weaponIndex);buildGun();playSound('select')};weaponSelect.addEventListener('change',()=>selectWeapon(Number(weaponSelect.value)));buildGun();
+// enemies
+const enemies=[];function enemy(x,z){const g=new THREE.Group();const uniform=mat(0x454d43),vest=mat(0x292f2c),skin=mat(0x9b8068);const torso=new THREE.Mesh(new THREE.BoxGeometry(.62,.78,.34),uniform);torso.position.y=1.15;torso.castShadow=true;g.add(torso);const plate=new THREE.Mesh(new THREE.BoxGeometry(.66,.48,.12),vest);plate.position.set(0,1.2,-.2);g.add(plate);const head=new THREE.Mesh(new THREE.SphereGeometry(.2,12,10),skin);head.position.y=1.68;head.castShadow=true;g.add(head);const helmet=new THREE.Mesh(new THREE.SphereGeometry(.22,12,8,0,Math.PI*2,0,Math.PI/2),dark);helmet.position.y=1.77;g.add(helmet);for(const s of [-1,1]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.2,.68,.23),uniform);leg.position.set(s*.18,.35,0);g.add(leg);const arm=new THREE.Mesh(new THREE.BoxGeometry(.18,.62,.2),uniform);arm.position.set(s*.42,1.18,-.02);arm.rotation.z=s*.12;g.add(arm)}g.position.set(x,0,z);scene.add(g);enemies.push({g,hp:100,alive:true,cool:Math.random()*2,walk:Math.random()*6});}
+// Dense hostile force: 24 enemies distributed around the industrial district.
+[[-20,-5],[21,-24],[29,15],[-28,22],[4,-29],[10,27],[-6,-25],[31,-8],[-32,4],[18,29],[-16,29],[2,8],[26,-29],[-34,-28],[34,28],[-3,32],[12,-4],[-23,-22],[7,22],[-31,28],[34,0],[-12,8],[22,20],[-27,-12]].forEach(p=>enemy(...p));
+// Real-world named aircraft, vehicles, drones and support systems (gameplay effects are fictionalized).
+const streaks=[
+ ['RQ-11B RAVEN','偵察UAV','小型偵察ドローンが敵位置をマーキング','scan',3],
+ ['AeroVironment SWITCHBLADE 300','徘徊型弾薬','小型無人機による限定攻撃','drone',4],
+ ['MQ-9 REAPER','無人攻撃機','上空から精密支援','air',5],
+ ['AH-64E APACHE','攻撃ヘリ','攻撃ヘリが複数目標を攻撃','air',6],
+ ['A-10C THUNDERBOLT II','近接航空支援','近接航空支援の機銃掃射','air',7],
+ ['AC-130J GHOSTRIDER','ガンシップ','旋回しながら複数目標を制圧','air',8],
+ ['F-16C FIGHTING FALCON','戦闘機','高速航空攻撃','air',9],
+ ['F/A-18E SUPER HORNET','艦載戦闘攻撃機','航空攻撃を実施','air',10],
+ ['B-1B LANCER','爆撃機','広域爆撃の演出','artillery',12],
+ ['B-52H STRATOFORTRESS','戦略爆撃機','大規模爆撃の演出','ultimate',14],
+ ['M142 HIMARS','ロケット砲','指定区域へのロケット攻撃','artillery',7],
+ ['M270A2 MLRS','多連装ロケット砲','複数地点へのロケット攻撃','artillery',8],
+ ['M109A7 PALADIN','自走榴弾砲','指定区域への砲撃','artillery',6],
+ ['M777A2 HOWITZER','牽引榴弾砲','精密砲撃支援','artillery',5],
+ ['BGM-109 TOMAHAWK','巡航ミサイル','巡航ミサイルの着弾演出','missile',10],
+ ['AGM-158 JASSM','空対地巡航ミサイル','精密攻撃','missile',9],
+ ['M1A2 SEPv3 ABRAMS','主力戦車','装甲支援が敵を攻撃','ground',8],
+ ['M2A4 BRADLEY','歩兵戦闘車','機械化部隊の支援','ground',6],
+ ['STRYKER ICV','装輪装甲車','装甲車両の支援','ground',5],
+ ['MIM-104 PATRIOT','防空ミサイル','防御支援で被ダメージを軽減','defense',7],
+ ['NASAMS','地対空ミサイル','電子・防空支援','jam',5],
+ ['AN/TPQ-53 Q-53','対砲兵レーダー','敵位置を広域マーキング','scan',4],
+ ['AN/ALQ-184 ECM POD','電子妨害','敵の攻撃を一時的に妨害','jam',5],
+ ['M18 SMOKE GRENADE','発煙弾','一時的に敵の攻撃を抑制','defense',3],
+ ['GBU-12 PAVEWAY II','レーザー誘導爆弾','単一目標への精密攻撃','strike',6],
+ ['GBU-31 JDAM','統合直接攻撃弾','範囲内の敵を攻撃','strike',7],
+ ['AGM-114 HELLFIRE','空対地ミサイル','精密攻撃','strike',5],
+ ['FIM-92 STINGER','携帯式防空ミサイル','対空防御支援','defense',4],
+ ['M3E1 CARL GUSTAF','無反動砲','強力な単体攻撃','strike',4],
+ ['MORTAR SECTION','迫撃砲班','複数発の迫撃砲支援','artillery',5]
+ ,
+ ['MQ-1C GRAY EAGLE','無人偵察攻撃機','無人機による支援','drone',6],
+ ['RQ-4 GLOBAL HAWK','高高度偵察機','広域偵察で敵をマーキング','scan',7],
+ ['RQ-170 SENTINEL','ステルス偵察機','敵位置を秘匿偵察','scan',8],
+ ['BAYRAKTAR TB2','無人攻撃機','無人機による攻撃','drone',5],
+ ['IAI HAROP','徘徊型弾薬','徘徊型弾薬の攻撃演出','strike',6],
+ ['SWITCHBLADE 600','徘徊型弾薬','長距離無人機攻撃','drone',7],
+ ['HERO-120','徘徊型弾薬','精密無人機攻撃','drone',5],
+ ['HERMES 450','無人航空機','偵察支援','scan',4],
+ ['HERMES 900','無人航空機','広域偵察支援','scan',6],
+ ['CH-47F CHINOOK','輸送ヘリ','友軍増援の演出','ground',5],
+ ['UH-60M BLACK HAWK','多用途ヘリ','機動支援','ground',4],
+ ['UH-1Y VENOM','攻撃支援ヘリ','航空支援','air',5],
+ ['CH-53K KING STALLION','大型輸送ヘリ','重装備輸送支援','ground',7],
+ ['MV-22B OSPREY','ティルトローター機','高速展開支援','ground',6],
+ ['EUROCOPTER TIGER','攻撃ヘリ','航空攻撃','air',6],
+ ['KAMOV KA-52','攻撃ヘリ','航空攻撃','air',7],
+ ['MIL MI-24 HIND','攻撃ヘリ','航空攻撃','air',6],
+ ['SU-25 FROGFOOT','攻撃機','近接航空支援','air',6],
+ ['F-15E STRIKE EAGLE','戦闘爆撃機','精密航空攻撃','air',8],
+ ['F-35A LIGHTNING II','ステルス戦闘機','精密航空支援','air',9],
+ ['F-35B LIGHTNING II','STOVL戦闘機','精密航空支援','air',9],
+ ['F-22 RAPTOR','制空戦闘機','航空優勢支援','air',10],
+ ['EUROFIGHTER TYPHOON','多用途戦闘機','航空攻撃','air',8],
+ ['DASSAULT RAFALE','多用途戦闘機','航空攻撃','air',8],
+ ['JAS 39 GRIPEN E','多用途戦闘機','航空攻撃','air',7],
+ ['B-2A SPIRIT','ステルス爆撃機','広域攻撃の演出','ultimate',14],
+ ['B-21 RAIDER','ステルス爆撃機','戦略支援の演出','ultimate',15],
+ ['TU-160 BLACKJACK','戦略爆撃機','大規模航空攻撃','ultimate',14],
+ ['TU-95MS BEAR','戦略爆撃機','長距離航空攻撃','ultimate',13],
+ ['P-8A POSEIDON','哨戒機','広域監視支援','scan',5],
+ ['E-3G SENTRY','早期警戒管制機','敵位置を広域マーキング','scan',8],
+ ['E-2D HAWKEYE','早期警戒機','戦場監視支援','scan',6],
+ ['RC-135 RIVET JOINT','電子偵察機','敵位置と活動を探知','scan',7],
+ ['EC-130H COMPASS CALL','電子戦機','敵の攻撃を妨害','jam',8],
+ ['EA-18G GROWLER','電子戦機','電子妨害支援','jam',7],
+ ['KC-135 STRATOTANKER','空中給油機','支援ゲージを補助','defense',5],
+ ['KC-46 PEGASUS','空中給油機','支援ゲージを補助','defense',6],
+ ['C-130J SUPER HERCULES','輸送機','補給物資を投下','defense',5],
+ ['C-17 GLOBEMASTER III','大型輸送機','重装備補給支援','defense',7],
+ ['C-5M SUPER GALAXY','大型輸送機','大規模補給支援','defense',8],
+ ['M1A1 ABRAMS','主力戦車','戦車支援','ground',7],
+ ['LEOPARD 2A7','主力戦車','戦車支援','ground',7],
+ ['CHALLENGER 3','主力戦車','戦車支援','ground',8],
+ ['K2 BLACK PANTHER','主力戦車','戦車支援','ground',7],
+ ['MERKAVA MK.4','主力戦車','戦車支援','ground',7],
+ ['T-90M PRORYV','主力戦車','戦車支援','ground',7],
+ ['TYPE 10 MBT','主力戦車','戦車支援','ground',6],
+ ['CV90','歩兵戦闘車','機械化支援','ground',5],
+ ['BOXER GTK','装輪装甲車','装甲支援','ground',5],
+ ['PATRIA AMV','装輪装甲車','装甲支援','ground',5],
+ ['LAV-25','装輪装甲車','機動支援','ground',4],
+ ['OSHKOSH JLTV','軽戦術車両','機動部隊支援','ground',3],
+ ['M-ATV','耐地雷装甲車','装甲輸送支援','ground',4],
+ ['M1126 STRYKER ICV','装輪装甲車','機械化支援','ground',5],
+ ['M88A2 HERCULES','装甲回収車','補給・修理支援','defense',4],
+ ['M1150 ABV','突撃突破車','突破支援の演出','ground',6],
+ ['M10 BOOKER','火力支援車','地上火力支援','ground',6],
+ ['CENTAURO II','装輪戦闘車','機動火力支援','ground',6],
+ ['PZH 2000','自走榴弾砲','砲撃支援','artillery',8],
+ ['CAESAR 155','自走榴弾砲','機動砲撃支援','artillery',7],
+ ['ARCHER ARTILLERY SYSTEM','自走榴弾砲','精密砲撃支援','artillery',7],
+ ['K9 THUNDER','自走榴弾砲','砲撃支援','artillery',7],
+ ['2S19 MSTA-S','自走榴弾砲','砲撃支援','artillery',7],
+ ['2S7M MALKA','自走砲','重砲撃支援','artillery',10],
+ ['BM-21 GRAD','多連装ロケット砲','ロケット砲撃支援','artillery',6],
+ ['BM-30 SMERCH','多連装ロケット砲','広域ロケット攻撃','artillery',9],
+ ['TOS-1A SOLNTSEPEK','重火炎放射システム','ゲーム内の範囲攻撃演出','artillery',10],
+ ['9K720 ISKANDER-M','短距離弾道ミサイル','戦略攻撃の演出','ultimate',13],
+ ['BRAHMOS','超音速巡航ミサイル','高速精密攻撃','missile',10],
+ ['NAVAL STRIKE MISSILE','対艦巡航ミサイル','沿岸攻撃の演出','missile',8],
+ ['AGM-158C LRASM','対艦ミサイル','精密ミサイル攻撃','missile',9],
+ ['GBU-53/B STORMBREAKER','滑空誘導爆弾','精密攻撃','strike',7],
+ ['GBU-57 MOP','大型貫通爆弾','重攻撃の演出','ultimate',14],
+ ['AGM-88E AARGM','対レーダーミサイル','敵支援装備を妨害','jam',8],
+ ['AIM-120D AMRAAM','空対空ミサイル','航空防御支援','defense',6],
+ ['AIM-9X SIDEWINDER','空対空ミサイル','航空防御支援','defense',5],
+ ['THAAD','弾道ミサイル防衛','防御支援','defense',11]
+].map((a,i)=>({name:a[0],category:a[1],desc:a[2],type:a[3],need:a[4],id:i}));
+let streakKills=0,streakIndex=0,streakUsed=new Set(),supportUntil=0,markedUntil=0;
+function notifyStreak(title,msg){const el=document.querySelector('#streaktoast');document.querySelector('#streaktitle').textContent=title;document.querySelector('#streakmessage').textContent=msg;el.style.opacity=1;clearTimeout(notifyStreak.t);notifyStreak.t=setTimeout(()=>el.style.opacity=0,2200)}
+function currentStreak(){return streaks[streakIndex]}
+function updateStreakHud(){const st=currentStreak();document.querySelector('#streakname').textContent=st.name;document.querySelector('#streakdesc').textContent=st.category+' // '+st.desc;document.querySelector('#streakprogress').textContent=streakKills+' / '+st.need+' KILLS';document.querySelector('#streakindex').textContent=String(st.id+1).padStart(2,'0');document.querySelector('#streakindex').nextSibling.textContent='/'+streaks.length;document.querySelector('#streakfill').style.width=Math.min(100,streakKills/st.need*100)+'%';}
+function cycleStreak(dir){streakIndex=(streakIndex+dir+streaks.length)%streaks.length;updateStreakHud();}
+function cinematic(kind,title='AIR SUPPORT',subtitle='SUPPORT REQUEST CONFIRMED',caption='INCOMING'){const el=document.querySelector('#cinematic'),visual=document.querySelector('#cVisual');document.querySelector('#cTitle').textContent=title;document.querySelector('#cSub').textContent=subtitle;document.querySelector('#cCaption').textContent=caption;visual.innerHTML=kind==='ac130'?'<div class="plane">✈</div><div class="boom"></div>':'<div class="missile">➤</div><div class="boom"></div>';el.classList.add('show');setTimeout(()=>el.classList.remove('show'),kind==='ac130'?3800:3200);}
+function deployStreak(){const st=currentStreak();if(streakKills<st.need){notifyStreak('INSUFFICIENT KILLS',`${st.need-streakKills} MORE KILLS REQUIRED`);return;}if(streakUsed.has(st.id)){notifyStreak('SUPPORT EXPENDED','別の支援を選択してください');return;}streakUsed.add(st.id);streakKills-=st.need;const living=enemies.filter(e=>e.alive);let affected=0;if(st.name==='AC-130J GHOSTRIDER'){cinematic('ac130');setTimeout(()=>{const targets=enemies.filter(e=>e.alive).sort((a,b)=>a.g.position.distanceTo(camera.position)-b.g.position.distanceTo(camera.position)).slice(0,5);targets.forEach(e=>{visualBlast(e.g.position.clone().add(new THREE.Vector3(0,1,0)));e.hp-=130;if(e.hp<=0){e.alive=false;e.g.visible=false;e.respawnAt=performance.now()+6500;kills++;affected++;}});updateHud();},1700);updateStreakHud();notifyStreak('AC-130 INBOUND','GUNSHIP // GUN RUN');return;}if(st.name==='BGM-109 TOMAHAWK'){cinematic('missile');setTimeout(()=>{const target=enemies.filter(e=>e.alive).sort((a,b)=>a.g.position.distanceTo(camera.position)-b.g.position.distanceTo(camera.position))[0];if(target){visualBlast(target.g.position.clone().add(new THREE.Vector3(0,1,0)));enemies.filter(e=>e.alive&&e.g.position.distanceTo(target.g.position)<12).forEach(e=>{e.hp-=200;if(e.hp<=0){e.alive=false;e.g.visible=false;e.respawnAt=performance.now()+6500;kills++;affected++;}});}updateHud();updateStreakHud();},1900);notifyStreak('MISSILE AWAY','GUIDANCE CAMERA // IMPACT');return;}
+ if(st.type==='air'){cinematic('ac130',st.name,'ORBITAL PLATFORM ACQUIRED','GUN RUN COMPLETE');}else if(st.type==='artillery'||st.type==='missile'){cinematic('missile',st.name,'GUIDANCE LOCK // TERMINAL APPROACH','IMPACT CONFIRMED');}else if(st.type==='scan'){markedUntil=performance.now()+12000;affected=living.length;}
+ else if(st.type==='jam'){supportUntil=performance.now()+12000;affected=living.length;}
+ else if(st.type==='defense'){hp=Math.min(100,hp+55);armor=Math.min(100,armor+100);affected=1;}
+ else {const count=st.type==='ultimate'?living.length:st.type==='artillery'||st.type==='air'?Math.min(4,living.length):st.type==='strike'||st.type==='special'?Math.min(2,living.length):1;const targets=[...living].sort((a,b)=>a.g.position.distanceTo(camera.position)-b.g.position.distanceTo(camera.position)).slice(0,count);targets.forEach((e,i)=>{e.hp-=st.type==='ultimate'?999:st.type==='artillery'?140:st.type==='air'?110:st.type==='strike'?125:st.type==='ground'?90:st.type==='drone'?75:st.type==='special'?100:85;if(e.hp<=0){e.alive=false;e.g.visible=false;kills++;streakKills++;affected++;}});}
+ updateHud();updateStreakHud();notifyStreak('SUPPORT DEPLOYED',`${st.name} // EFFECTIVE: ${affected}`);}
+updateStreakHud();
+
+// Killstreak blast effects
+function visualBlast(pos){playSound('explosion');const light=new THREE.PointLight(0xff8c38,8,18);light.position.copy(pos);scene.add(light);const sphere=new THREE.Mesh(new THREE.SphereGeometry(1.6,12,10),new THREE.MeshBasicMaterial({color:0xffa24b,transparent:true,opacity:.85}));sphere.position.copy(pos);scene.add(sphere);let t=0;const tick=()=>{t+=.08;sphere.scale.setScalar(1+t*2);sphere.material.opacity=Math.max(0,.85-t);light.intensity=Math.max(0,8-t*12);if(t<.7)requestAnimationFrame(tick);else{scene.remove(sphere);scene.remove(light)}};tick();}
+
+const ray=new THREE.Raycaster();let yaw=0,pitch=0,locked=false,started=false,hp=100,armor=100,ammo=Infinity,reserve=Infinity,kills=0,reloading=false,fireCooldown=0,damageFlash=0,hitTimer=0,aim=false,velocityY=0,onGround=true;const keys={};const menu=document.querySelector('#menu'),hud=document.querySelector('#hud');
+function updateHud(){document.querySelector('#hpnum').textContent=Math.max(0,Math.ceil(hp));document.querySelector('#hpfill').style.width=Math.max(0,hp)+'%';document.querySelector('#armornum').textContent=Math.ceil(armor);document.querySelector('#armorfill').style.width=Math.max(0,armor)+'%';document.querySelector('#mag').textContent='∞';document.querySelector('#reserve').textContent='∞';document.querySelector('#status').textContent='HOSTILE CONTACTS: '+enemies.filter(e=>e.alive).length+'　/　KILLS: '+kills}
+function start(){ensureAudio();playSound('select');started=true;menu.style.display='none';hud.style.display='block';if(matchMedia('(pointer:coarse)').matches||innerWidth<800)document.querySelector('#mobile').style.display='block';renderer.domElement.requestPointerLock?.();}document.querySelector('#start').onclick=start;
+document.addEventListener('pointerlockchange',()=>locked=document.pointerLockElement===renderer.domElement);document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.35,Math.min(1.35,pitch));});document.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyR')reload();if(/^Digit[1-9]$/.test(e.code))selectWeapon(Number(e.code.slice(5))-1);if(e.code==='Digit0')selectWeapon(9);if(e.code==='KeyQ')cycleStreak(1);if(e.code==='KeyE')deployStreak();if(e.code==='Space'&&onGround){velocityY=5.3;onGround=false}if(e.code==='Escape'&&started){menu.style.display='flex';hud.style.display='none';document.exitPointerLock?.();}});document.addEventListener('keyup',e=>keys[e.code]=false);document.addEventListener('mousedown',e=>{if(!started)return;if(e.button===0)shoot();if(e.button===2)aim=true});document.addEventListener('mouseup',e=>{if(e.button===2)aim=false});document.addEventListener('contextmenu',e=>e.preventDefault());
+function reload(){playSound('select');document.querySelector('#toast').textContent='AMMO // UNLIMITED';toast();}
+function shoot(){if(!started||reloading||fireCooldown>0)return;ensureAudio();const weapon=weaponDefs[weaponIndex];playSound('shot');fireCooldown=weapon.rate;gun.position.z=.08;gun.rotation.x=-.04;const dir=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);ray.set(camera.position,dir);ray.far=85;let best=null,bestDist=85;for(const e of enemies){if(!e.alive)continue;const box3=new THREE.Box3().setFromObject(e.g);const hit=ray.ray.intersectBox(box3,new THREE.Vector3());if(hit){const d=hit.distanceTo(camera.position);if(d<bestDist){best=e;bestDist=d}}}if(best){best.hp-=weapon.damage;playSound('hit');hitTimer=.16;document.querySelector('#hit').style.opacity=1;if(best.hp<=0){best.alive=false;best.g.visible=false;best.respawnAt=performance.now()+6500;kills++;streakKills++;document.querySelector('#toast').textContent='TARGET NEUTRALIZED';toast();updateStreakHud();if(streakKills>=currentStreak().need&&!streakUsed.has(currentStreak().id))notifyStreak('KILLSTREAK READY',currentStreak().name+' // PRESS E / △ TO DEPLOY')} }updateHud();}
+function toast(){const t=document.querySelector('#toast');t.style.opacity=1;clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.opacity=0,850)}
+// Gamepad + mobile touch
+let armorCooldown=0;function useArmor(){if(armorCooldown>0||armor>=100){document.querySelector('#toast').textContent=armor>=100?'ARMOR FULL':'PLATE RECHARGING';toast();return}armor=Math.min(100,armor+50);armorCooldown=8;playSound('select');document.querySelector('#toast').textContent='ARMOR PLATE APPLIED';toast();updateHud()}document.addEventListener('keydown',e=>{if(e.code==='KeyV'&&started)useArmor()});document.querySelector('#armorPlate').addEventListener('pointerdown',e=>{e.preventDefault();useArmor()});let gpPrev={};function gamepad(){const pads=navigator.getGamepads?.()||[];const p=[...pads].find(x=>x&&x.connected);if(!p)return {mx:0,mz:0,rx:0,ry:0,fire:false,aim:false,sprint:false,jump:false,reload:false};const dz=v=>Math.abs(v)<.16?0:v;const b=i=>!!p.buttons[i]?.pressed;const out={mx:dz(p.axes[0]||0),mz:dz(p.axes[1]||0),rx:dz(p.axes[2]||0),ry:dz(p.axes[3]||0),fire:b(7)||b(5),aim:b(6)||b(4),sprint:b(10),jump:b(0),reload:b(2),prevL:b(14),prevR:b(15),deploy:b(3),weaponPrev:b(12),weaponNext:b(13)};if(out.weaponPrev&&!gpPrev.weaponPrev)selectWeapon(weaponIndex-1);if(out.weaponNext&&!gpPrev.weaponNext)selectWeapon(weaponIndex+1);if(out.prevL&&!gpPrev.prevL)cycleStreak(-1);if(out.prevR&&!gpPrev.prevR)cycleStreak(1);if(out.deploy&&!gpPrev.deploy)deployStreak();if(out.reload&&!gpPrev.reload)reload();if(out.jump&&!gpPrev.jump&&onGround){velocityY=5.3;onGround=false}gpPrev=out;return out;}
+let touchMove={x:0,y:0},touchLook=null;const touchSurface=document.querySelector('#mobile');touchSurface.addEventListener('pointerdown',e=>{if(e.target.closest('button')||e.target.closest('#stick'))return;touchLook={x:e.clientX,y:e.clientY};touchSurface.setPointerCapture(e.pointerId)});touchSurface.addEventListener('pointermove',e=>{if(!touchLook||e.target.closest('button')||e.target.closest('#stick'))return;const dx=e.clientX-touchLook.x,dy=e.clientY-touchLook.y;touchLook={x:e.clientX,y:e.clientY};yaw-=dx*.004;pitch=THREE.MathUtils.clamp(pitch-dy*.004,-1.35,1.35)});touchSurface.addEventListener('pointerup',()=>touchLook=null);const stick=document.querySelector('#stick'),nub=document.querySelector('#nub');stick.addEventListener('pointerdown',e=>{stick.setPointerCapture(e.pointerId);moveStick(e)});stick.addEventListener('pointermove',e=>{if(e.buttons)moveStick(e)});stick.addEventListener('pointerup',()=>{touchMove={x:0,y:0};nub.style.transform='translate(0,0)'});function moveStick(e){const r=stick.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2),d=Math.min(38,Math.hypot(x,y)),a=Math.atan2(y,x);touchMove={x:Math.cos(a)*d/38,y:Math.sin(a)*d/38};nub.style.transform=`translate(${touchMove.x*30}px,${touchMove.y*30}px)`}document.querySelector('#fire').addEventListener('pointerdown',e=>{e.preventDefault();shoot()});document.querySelector('#reload').onclick=reload;let touchLookLast=null;renderer.domElement.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&e.clientX>innerWidth*.48)touchLookLast={x:e.clientX,y:e.clientY};});renderer.domElement.addEventListener('pointermove',e=>{if(e.pointerType==='touch'&&touchLookLast){yaw-=(e.clientX-touchLookLast.x)*.004;pitch-=(e.clientY-touchLookLast.y)*.004;pitch=THREE.MathUtils.clamp(pitch,-1.35,1.35);touchLookLast={x:e.clientX,y:e.clientY};}});renderer.domElement.addEventListener('pointerup',e=>{if(e.pointerType==='touch')touchLookLast=null;});document.querySelector('#streaknext').onclick=()=>cycleStreak(1);document.querySelector('#streakcall').addEventListener('pointerdown',e=>{e.preventDefault();deployStreak();});
+let last=performance.now();function animate(now){requestAnimationFrame(animate);const dt=Math.min(.04,(now-last)/1000);last=now;if(started){if(armorCooldown>0)armorCooldown=Math.max(0,armorCooldown-dt);const pad=gamepad();const forward=(keys.KeyW?1:0)-(keys.KeyS?1:0)-pad.mz-touchMove.y;const side=(keys.KeyD?1:0)-(keys.KeyA?1:0)+pad.mx+touchMove.x;const speed=(keys.ShiftLeft||pad.sprint?8.2:5.1);const move=new THREE.Vector3(side,0,-forward);if(move.length()>1)move.normalize();move.applyAxisAngle(new THREE.Vector3(0,1,0),yaw);const old=camera.position.clone();camera.position.x+=move.x*speed*dt;camera.position.z+=move.z*speed*dt;camera.position.x=THREE.MathUtils.clamp(camera.position.x,-37,37);camera.position.z=THREE.MathUtils.clamp(camera.position.z,-35,35);for(const c of colliders){if(Math.abs(camera.position.x-c.x)<c.w/2+.35&&Math.abs(camera.position.z-c.z)<c.d/2+.35){camera.position.x=old.x;camera.position.z=old.z;break}}velocityY-=14*dt;camera.position.y+=velocityY*dt;if(camera.position.y<1.7){camera.position.y=1.7;velocityY=0;onGround=true}yaw-=pad.rx*.045;pitch-=pad.ry*.04;pitch=THREE.MathUtils.clamp(pitch,-1.35,1.35);if(pad.fire)shoot();aim=pad.aim;camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;camera.fov=THREE.MathUtils.lerp(camera.fov,aim?57:76,dt*12);camera.updateProjectionMatrix();gun.position.x=THREE.MathUtils.lerp(gun.position.x,0,dt*10);gun.position.y=THREE.MathUtils.lerp(gun.position.y,0,dt*10);gun.position.z=THREE.MathUtils.lerp(gun.position.z,0,dt*12);gun.rotation.x=THREE.MathUtils.lerp(gun.rotation.x,0,dt*10);if(fireCooldown>0)fireCooldown-=dt;if(hitTimer>0){hitTimer-=dt;if(hitTimer<=0)document.querySelector('#hit').style.opacity=0}
+// enemy awareness / incoming fire
+for(const e of enemies){if(!e.alive){if(performance.now()>=(e.respawnAt||0)){const a=Math.random()*Math.PI*2,r=22+Math.random()*12;e.g.position.set(THREE.MathUtils.clamp(camera.position.x+Math.cos(a)*r,-34,34),0,THREE.MathUtils.clamp(camera.position.z+Math.sin(a)*r,-32,32));e.hp=100;e.alive=true;e.g.visible=true;e.cool=1+Math.random()*2;}else continue;}const dx=camera.position.x-e.g.position.x,dz=camera.position.z-e.g.position.z,dist=Math.hypot(dx,dz);e.g.lookAt(camera.position.x,0,camera.position.z);e.g.traverse(o=>{if(o.isMesh&&o.material&&o.material.emissive){o.material.emissive.setHex(performance.now()<markedUntil?0x24451b:0x000000);o.material.emissiveIntensity=performance.now()<markedUntil?.65:0;}});e.walk+=dt;if(dist>7&&dist<30){e.g.position.x+=(dx/dist)*dt*.65;e.g.position.z+=(dz/dist)*dt*.65}e.cool-=dt;if(dist<27&&e.cool<=0&&performance.now()>supportUntil){e.cool=1.3+Math.random()*1.2;let incoming=3+Math.random()*5;const absorbed=Math.min(armor,incoming);armor-=absorbed;hp=Math.max(0,hp-(incoming-absorbed));damageFlash=.28;document.querySelector('#damage').style.opacity=.65;updateHud();if(hp<=0){hp=100;armor=100;streakKills=0;streakUsed.clear();updateStreakHud();camera.position.set(0,1.7,8);ammo=Math.max(10,ammo);updateHud();document.querySelector('#toast').textContent='RESPAWN // BACK IN ACTION';toast()}}}if(damageFlash>0){damageFlash-=dt;document.querySelector('#damage').style.opacity=Math.max(0,damageFlash*2.3)}else document.querySelector('#damage').style.opacity=0;document.querySelector('#hint').textContent=navigator.getGamepads?.().some(p=>p?.connected)?'DUALSHOCK　/　L-STICK MOVE　R-STICK LOOK　R2 FIRE　△ SUPPORT':'WASD MOVE　/　MOUSE LOOK　/　LMB FIRE　/　V ARMOR　/　Q SELECT　E SUPPORT';}
+renderer.render(scene,camera)}requestAnimationFrame(animate);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+// prevent accidental page scrolling on controller / touch
+addEventListener('gamepadconnected',()=>{document.querySelector('#toast').textContent='CONTROLLER LINKED';toast()});
+</script></body></html>
